@@ -1,5 +1,6 @@
 package com.supermarket.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import com.supermarket.common.utils.KklResult;
 import com.supermarket.mapper.TbItemParamMapper;
 import com.supermarket.pojo.TbItemParam;
 import com.supermarket.pojo.TbItemParamExample;
+import com.supermarket.pojo.TbItemParamExample.Criteria;
 import com.supermarket.service.ItemSpecificationService;
 
 /**
@@ -46,5 +48,27 @@ public class ItemSpecificationServiceImpl implements ItemSpecificationService {
 		return KklResult.ok();
 	}
 
+	@Override
+	public KklResult queryItemSpecificationTemplateByCatId(Long itemCatId) {
+		TbItemParamExample example = new TbItemParamExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andItemCatIdEqualTo(itemCatId);
+		List<TbItemParam> list = itemParamMapper.selectByExampleWithBLOBs(example);
+		if (list!=null && list.size()>0) {
+			return KklResult.ok(list.get(0));
+		}
+		return KklResult.ok();
+	}
+
+	@Override
+	public KklResult insertSpecificationTemplate(TbItemParam itemParam) {
+		Date date=new Date();
+		itemParam.setCreated(date);
+		itemParam.setUpdated(date);
+		itemParamMapper.insertSelective(itemParam);
+		return KklResult.ok();
+	}
+
+	
 	
 }
