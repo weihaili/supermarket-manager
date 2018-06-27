@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.supermarket.common.pojo.EUDataGridResult;
+import com.supermarket.common.pojo.ItemStatus;
 import com.supermarket.common.utils.IDUtils;
 import com.supermarket.common.utils.KklResult;
 import com.supermarket.mapper.TbItemDescMapper;
@@ -83,7 +84,7 @@ public class ItemServiceImpl implements ItemService {
 		//completion product attributes
 		item.setId(itemId);
 		//1:normal  2:drop off   3:delete
-		item.setStatus((byte) 1);
+		item.setStatus(ItemStatus.NORMAL.getStatusCode());
 		item.setCreated(date);
 		item.setUpdated(date);
 		//insert table tb_item
@@ -102,4 +103,83 @@ public class ItemServiceImpl implements ItemService {
 		return KklResult.ok();
 	}
 
+	/* before reset commodity information query description by item id
+	 * @see com.supermarket.service.ItemService#resetItemQueryDescById(long)
+	 */
+	@Override
+	public KklResult resetItemQueryDescById(long itemId) {
+		TbItemDesc itemDesc = itemDescMapper.selectByPrimaryKey(itemId);
+		String desc=itemDesc.getItemDesc();
+		return KklResult.ok(desc);
+	}
+
+	/* before reset commodity information query item attributes by item id
+	 * @see com.supermarket.service.ItemService#resetItemParamQueryById(long)
+	 */
+	@Override
+	public KklResult resetItemParamQueryById(long itemId) {
+		TbItem tbItem = itemMapper.selectByPrimaryKey(itemId);
+		return KklResult.ok(tbItem);
+	}
+
+	/* update commodity information
+	 * @see com.supermarket.service.ItemService#updateItem(com.supermarket.pojo.TbItem, java.lang.String)
+	 */
+	@Override
+	public KklResult updateItem(TbItem item, String desc) {
+		Date date=new Date();
+		Long itemId = item.getId();
+		TbItem tbItem = itemMapper.selectByPrimaryKey(itemId);
+		tbItem.setBarcode(item.getBarcode());
+		tbItem.setCid(item.getCid());
+		tbItem.setImage(item.getImage());
+		tbItem.setNum(item.getNum());
+		tbItem.setPrice(item.getPrice());
+		tbItem.setSellPoint(item.getSellPoint());
+		tbItem.setStatus(ItemStatus.NORMAL.getStatusCode());
+		tbItem.setTitle(item.getTitle());
+		tbItem.setUpdated(date);
+		itemMapper.updateByPrimaryKey(tbItem);
+		
+		TbItemDesc tbItemDesc = itemDescMapper.selectByPrimaryKey(itemId);
+		tbItemDesc.setItemDesc(desc);
+		tbItemDesc.setUpdated(date);
+		itemDescMapper.updateByPrimaryKeyWithBLOBs(tbItemDesc);
+		
+		return KklResult.ok();
+	}
+
+	@Override
+	public KklResult resetItemDeleteByIds(String[] ids) {
+		for (String id : ids) {
+			Long itemId = Long.parseLong(id);
+			itemMapper.deleteByPrimaryKey(itemId);
+			itemDescMapper.deleteByPrimaryKey(itemId);
+		}
+		return KklResult.ok();
+	}
+
+	@Override
+	public KklResult resetItemInstockByIds(String[] ids) {
+		for (String id : ids) {
+			Long itemId = Long.parseLong(id);
+			TbItem item = itemMapper.selectByPrimaryKey(itemId);
+			item.setStatus(ItemStatus.DROPOFF.getStatusCode());
+			item.setUpdated(new Date());
+			itemMapper.updateByPrimaryKeySelective(item);
+		}
+		return KklResult.ok();
+	}
+
+	@Override
+	public KklResult resetItemReshelfByIds(String[] ids) {
+		for (String id : ids) {
+			Long itemId=Long.parseLong(id);
+			TbItem item = itemMapper.selectByPrimaryKey(itemId);
+			item.setStatus(ItemStatus.NORMAL.getStatusCode());
+			item.setUpdated(new Date());
+			itemMapper.updateByPrimaryKeySelective(item);
+		}
+		return KklResult.ok();
+	}
 }

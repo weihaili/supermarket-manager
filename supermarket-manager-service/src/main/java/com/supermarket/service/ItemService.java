@@ -10,4 +10,16 @@ public interface ItemService {
 	EUDataGridResult getItemList(int page,int rows);
 	
 	KklResult addItem(TbItem item,String desc);
+
+	KklResult resetItemQueryDescById(long itemId);
+
+	KklResult resetItemParamQueryById(long itemId);
+
+	KklResult updateItem(TbItem item, String desc);
+
+	KklResult resetItemDeleteByIds(String[] ids);
+
+	KklResult resetItemInstockByIds(String[] ids);
+
+	KklResult resetItemReshelfByIds(String[] ids);
 }

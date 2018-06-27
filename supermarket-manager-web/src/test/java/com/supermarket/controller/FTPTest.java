@@ -15,8 +15,8 @@ import org.junit.Test;
  */
 public class FTPTest {
 	
-	@Test
-	public void testFtp() throws SocketException, IOException {
+	//@Test
+	/*public void testFtp() throws SocketException, IOException {
 		//create ftp client object
 		FTPClient ftpClient = new FTPClient();
 		//create ftp connection port default 21
@@ -32,7 +32,7 @@ public class FTPTest {
 		ftpClient.storeFile("hello1.jpg", inputStream);
 		//close connection
 		ftpClient.logout();
-	}
+	}*/
 	
 	
 	
