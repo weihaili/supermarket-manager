@@ -9,7 +9,7 @@ public interface ItemService {
 	
 	EUDataGridResult getItemList(int page,int rows);
 	
-	KklResult addItem(TbItem item,String desc);
+	KklResult addItem(TbItem item,String desc,String itemParams);
 
 	KklResult resetItemQueryDescById(long itemId);
 

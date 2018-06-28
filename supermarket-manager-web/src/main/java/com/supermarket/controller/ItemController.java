@@ -55,8 +55,8 @@ public class ItemController {
 	 */
 	@RequestMapping(value="/item/save",method=RequestMethod.POST)
 	@ResponseBody
-	public KklResult itemAdd(TbItem item,String desc) {
-		KklResult result = itemService.addItem(item, desc);
+	public KklResult itemAdd(TbItem item,String desc,String itemParams) {
+		KklResult result = itemService.addItem(item, desc,itemParams);
 		return result;
 	}
 	

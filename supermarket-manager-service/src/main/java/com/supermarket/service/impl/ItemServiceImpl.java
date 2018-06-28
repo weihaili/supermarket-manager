@@ -15,10 +15,12 @@ import com.supermarket.common.utils.IDUtils;
 import com.supermarket.common.utils.KklResult;
 import com.supermarket.mapper.TbItemDescMapper;
 import com.supermarket.mapper.TbItemMapper;
+import com.supermarket.mapper.TbItemParamItemMapper;
 import com.supermarket.pojo.TbItem;
 import com.supermarket.pojo.TbItemDesc;
 import com.supermarket.pojo.TbItemExample;
 import com.supermarket.pojo.TbItemExample.Criteria;
+import com.supermarket.pojo.TbItemParamItem;
 import com.supermarket.service.ItemService;
 
 /**
@@ -34,6 +36,9 @@ public class ItemServiceImpl implements ItemService {
 	
 	@Autowired
 	private TbItemDescMapper itemDescMapper;
+	
+	@Autowired
+	private TbItemParamItemMapper itemParamItemMapper;
 
 	/* according to primaryKey query goods information
 	 * @see com.supermarket.service.ItemService#getItemById(long)
@@ -77,7 +82,7 @@ public class ItemServiceImpl implements ItemService {
 	 * @see com.supermarket.service.ItemService#addItem(com.supermarket.pojo.TbItem, java.lang.String)
 	 */
 	@Override
-	public KklResult addItem(TbItem item, String desc) {
+	public KklResult addItem(TbItem item, String desc,String itemParams) {
 		//generate product id
 		long itemId = IDUtils.genItemId();
 		Date date = new Date();
@@ -99,6 +104,15 @@ public class ItemServiceImpl implements ItemService {
 		itemDesc.setUpdated(date);
 		//insert table tb_item_desc
 		itemDescMapper.insert(itemDesc);
+		
+		//create commodity specification table pojo objec
+		TbItemParamItem itemParamItem=new TbItemParamItem();
+		itemParamItem.setParamData(itemParams);
+		itemParamItem.setCreated(date);
+		itemParamItem.setUpdated(date);
+		itemParamItem.setItemId(itemId);
+		itemParamItemMapper.insertSelective(itemParamItem);
+		
 		//return success
 		return KklResult.ok();
 	}
