@@ -47,7 +47,11 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 		TbContentCategory contentCategory=new TbContentCategory();
 		Date date = new Date();
 		contentCategory.setCreated(date);
-		contentCategory.setIsParent(CommonParamter.ONE.getCodeBoolean());
+		if(getHierarchy(parentId)>3) {
+			contentCategory.setIsParent(CommonParamter.ZERO.getCodeBoolean());
+		}else {
+			contentCategory.setIsParent(CommonParamter.ONE.getCodeBoolean());
+		}
 		contentCategory.setName(name);
 		contentCategory.setUpdated(date);
 		contentCategory.setStatus(CommonParamter.ONE.getCode());
@@ -55,6 +59,31 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 		contentCategory.setParentId(parentId);
 		contentCategoryMapper.insertSelective(contentCategory);
 		return KklResult.ok();
+	}
+	
+	/**
+	 * @return :folder hierarchy count
+	 */
+	private int getHierarchy(long parentId) {
+		int count=0;
+		TbContentCategory contentCategory = contentCategoryMapper.selectByPrimaryKey(parentId);
+		if(contentCategory!=null) {
+			if ( contentCategory.getParentId()==0) {
+				count=1;
+			}else if(contentCategory.getParentId()==30) {
+				count=2;
+			}else {
+				TbContentCategory category = contentCategoryMapper.selectByPrimaryKey(contentCategory.getParentId());
+				if (category!=null) {
+					if (category.getParentId()!=30) {
+						count=4;
+					}else {
+						count=3;
+					}
+				}
+			}
+		}
+		return count;
 	}
 
 	@Override
