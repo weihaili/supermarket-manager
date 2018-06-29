@@ -5,6 +5,7 @@
 </div>
 <div id="contentCategoryMenu" class="easyui-menu" style="width:120px;" data-options="onClick:menuHandler">
     <div data-options="iconCls:'icon-add',name:'add'">添加</div>
+    <div data-options="iconCls:'icon-add',name:'addFolder'">添加大类</div>
     <div data-options="iconCls:'icon-remove',name:'rename'">重命名</div>
     <div class="menu-sep"></div>
     <div data-options="iconCls:'icon-remove',name:'delete'">删除</div>
@@ -62,7 +63,8 @@ function menuHandler(item){
 	}else if(item.name === "delete"){
 		$.messager.confirm('确认','确定删除名为 '+node.text+' 的分类吗？',function(r){
 			if(r){
-				$.post("/content/category/delete/",{parentId:node.parentId,id:node.id},function(){
+				/* $.post("/content/category/delete/",{parentId:node.parentId,id:node.id},function(){ */
+				$.post("/content/category/delete",{parentId:node.parentId,id:node.id},function(){
 					tree.tree("remove",node.target);
 				});	
 			}
