@@ -40,25 +40,26 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 	}
 
 	@Override
-	public KklResult addCategoryFolder(Long parentId, String name) {
+	public KklResult addCategoryFolder(Long parentId, String name,Boolean isParent) {
 		if (isRepeatContentCategoty(parentId, name)) {
 			return KklResult.repeat();
 		}
 		TbContentCategory contentCategory=new TbContentCategory();
 		Date date = new Date();
 		contentCategory.setCreated(date);
-		if(getHierarchy(parentId)>3) {
+		/*if(getHierarchy(parentId)>3) {
 			contentCategory.setIsParent(CommonParamter.ZERO.getCodeBoolean());
 		}else {
 			contentCategory.setIsParent(CommonParamter.ONE.getCodeBoolean());
-		}
+		}*/
+		contentCategory.setIsParent(isParent);
 		contentCategory.setName(name);
 		contentCategory.setUpdated(date);
 		contentCategory.setStatus(CommonParamter.ONE.getCode());
 		contentCategory.setSortOrder(CommonParamter.ONE.getCode());
 		contentCategory.setParentId(parentId);
-		contentCategoryMapper.insertSelective(contentCategory);
-		return KklResult.ok();
+		int id = contentCategoryMapper.insertSelective(contentCategory);
+		return KklResult.ok(contentCategory);
 	}
 	
 	/**

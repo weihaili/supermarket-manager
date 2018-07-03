@@ -47,9 +47,9 @@ public class ContentCategoryController {
 	 */
 	@RequestMapping(value="/content/category/create",method=RequestMethod.POST)
 	@ResponseBody
-	public KklResult createCategoryFolder( String parentId,String name) {
+	public KklResult createCategoryFolder( Long parentId,String name,Boolean isparent) {
 		System.out.println(parentId);
-		KklResult result=service.addCategoryFolder(Long.parseLong(parentId),name);
+		KklResult result=service.addCategoryFolder(parentId,name,isparent);
 		return result;
 	}
 	

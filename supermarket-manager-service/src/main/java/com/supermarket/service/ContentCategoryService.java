@@ -9,7 +9,7 @@ public interface ContentCategoryService {
 	
 	List<EUDataTreeNode> getContentCategoryList(long parentId);
 
-	KklResult addCategoryFolder(Long parentId, String name);
+	KklResult addCategoryFolder(Long parentId, String name,Boolean isParent);
 
 	KklResult updateContentCategoryById(long parseLong, String name);
 

@@ -5,7 +5,7 @@
 </div>
 <div id="contentCategoryMenu" class="easyui-menu" style="width:120px;" data-options="onClick:menuHandler">
     <div data-options="iconCls:'icon-add',name:'add'">添加</div>
-   <!--  <div data-options="iconCls:'icon-add',name:'addFolder'">添加大类</div> -->
+    <div data-options="iconCls:'icon-add',name:'addFolder'">添加大类</div>
     <div data-options="iconCls:'icon-remove',name:'rename'">重命名</div>
     <div class="menu-sep"></div>
     <div data-options="iconCls:'icon-remove',name:'delete'">删除</div>
@@ -28,7 +28,7 @@ $(function(){
         	var _tree = $(this);
         	if(node.id == 0){
         		// 新增节点
-        		$.post("/content/category/create",{parentId:node.parentId,name:node.text},function(data){
+        		$.post("/content/category/create",{parentId:node.parentId,name:node.text,isparent:node.isparent},function(data){
         			if(data.status == 200){
         				_tree.tree("update",{
             				target : node.target,
@@ -52,12 +52,25 @@ function menuHandler(item){
             parent: (node?node.target:null),
             data: [{
                 text: '新建分类',
+                isparent:false,
                 id : 0,
                 parentId : node.id
             }]
         }); 
 		var _node = tree.tree('find',0);
 		tree.tree("select",_node.target).tree('beginEdit',_node.target);
+	}else if(item.name=="addFolder"){
+		tree.tree('append',{
+				parent:(node?node.target:null),
+				data:[
+					{text:'create folder',
+					 isparent:true,
+					 id:0,
+					 parentId:node.id
+					}
+				]
+			}
+		);
 	}else if(item.name === "rename"){
 		tree.tree('beginEdit',node.target);
 	}else if(item.name === "delete"){
